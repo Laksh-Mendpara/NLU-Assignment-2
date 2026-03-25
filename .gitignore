@@ -214,3 +214,20 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Assignment packaging and temporary experiment artifacts
+B23CS1037-A2/
+assignment2_submission/
+q2/results_smoke/
+q2/results_smoke2/
+q2/results_tune/
+
+# Keep final q1 deliverables, but ignore heavy intermediate artifacts
+q1/output/crawler_state.json
+q1/output/data.txt
+q1/output/data/
+q1/output/models/
+q1/output/pdfs/
+q1/output/manifest.json
+q1/output/normalization_map.json
+q1/output/processed_segments.jsonl

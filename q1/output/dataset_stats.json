@@ -1,0 +1,673 @@
+{
+  "corpus_source": "manifest+json_directories",
+  "tokenizer_backend": "spacy:core_web_sm",
+  "raw_documents": 181,
+  "total_documents": 177,
+  "training_segments": 1545,
+  "duplicate_segments_skipped": 52,
+  "learned_phrases_count": 40,
+  "phrase_segments": 443,
+  "phrase_merge_events": 720,
+  "training_exclusion_tokens_count": 287,
+  "total_tokens": 54382,
+  "vocabulary_size": 6950,
+  "avg_document_length_tokens": 35.2,
+  "median_document_length_tokens": 35.0,
+  "top_10_tokens": [
+    [
+      "program",
+      548
+    ],
+    [
+      "research",
+      522
+    ],
+    [
+      "student",
+      467
+    ],
+    [
+      "technology",
+      405
+    ],
+    [
+      "science",
+      328
+    ],
+    [
+      "application",
+      311
+    ],
+    [
+      "course",
+      301
+    ],
+    [
+      "use",
+      281
+    ],
+    [
+      "physics",
+      254
+    ],
+    [
+      "area",
+      250
+    ]
+  ],
+  "top_25_tokens": [
+    [
+      "program",
+      548
+    ],
+    [
+      "research",
+      522
+    ],
+    [
+      "student",
+      467
+    ],
+    [
+      "technology",
+      405
+    ],
+    [
+      "science",
+      328
+    ],
+    [
+      "application",
+      311
+    ],
+    [
+      "course",
+      301
+    ],
+    [
+      "use",
+      281
+    ],
+    [
+      "physics",
+      254
+    ],
+    [
+      "area",
+      250
+    ],
+    [
+      "energy",
+      247
+    ],
+    [
+      "department",
+      245
+    ],
+    [
+      "project",
+      233
+    ],
+    [
+      "quantum",
+      224
+    ],
+    [
+      "understand",
+      223
+    ],
+    [
+      "elective",
+      219
+    ],
+    [
+      "model",
+      211
+    ],
+    [
+      "develop",
+      209
+    ],
+    [
+      "base",
+      198
+    ],
+    [
+      "development",
+      193
+    ],
+    [
+      "advance",
+      193
+    ],
+    [
+      "study",
+      191
+    ],
+    [
+      "data",
+      191
+    ],
+    [
+      "computational",
+      184
+    ],
+    [
+      "skill",
+      172
+    ]
+  ],
+  "learned_phrases_top_25": [
+    {
+      "left": "learn",
+      "right": "outcomes",
+      "phrase": "learn_outcomes",
+      "count": 19,
+      "score": 847.4753
+    },
+    {
+      "left": "comprehensive",
+      "right": "exam",
+      "phrase": "comprehensive_exam",
+      "count": 13,
+      "score": 829.8738
+    },
+    {
+      "left": "faculty",
+      "right": "member",
+      "phrase": "faculty_member",
+      "count": 36,
+      "score": 597.8416
+    },
+    {
+      "left": "grade",
+      "right": "credit",
+      "phrase": "grade_credit",
+      "count": 18,
+      "score": 125.1022
+    },
+    {
+      "left": "compulsory",
+      "right": "course",
+      "phrase": "compulsory_course",
+      "count": 24,
+      "score": 108.5477
+    },
+    {
+      "left": "postgraduate",
+      "right": "program",
+      "phrase": "postgraduate_program",
+      "count": 18,
+      "score": 79.0135
+    },
+    {
+      "left": "research",
+      "right": "board",
+      "phrase": "research_board",
+      "count": 18,
+      "score": 75.9666
+    },
+    {
+      "left": "program",
+      "right": "elective",
+      "phrase": "program_elective",
+      "count": 83,
+      "score": 55.6512
+    },
+    {
+      "left": "phd",
+      "right": "program",
+      "phrase": "phd_program",
+      "count": 63,
+      "score": 55.5741
+    },
+    {
+      "left": "credit",
+      "right": "non",
+      "phrase": "credit_non",
+      "count": 13,
+      "score": 50.8789
+    },
+    {
+      "left": "xxxxx",
+      "right": "program",
+      "phrase": "xxxxx_program",
+      "count": 14,
+      "score": 47.9958
+    },
+    {
+      "left": "degree",
+      "right": "mtech",
+      "phrase": "degree_mtech",
+      "count": 12,
+      "score": 43.2434
+    },
+    {
+      "left": "mtech",
+      "right": "phd",
+      "phrase": "mtech_phd",
+      "count": 14,
+      "score": 41.8209
+    },
+    {
+      "left": "undergraduate",
+      "right": "program",
+      "phrase": "undergraduate_program",
+      "count": 16,
+      "score": 38.7884
+    },
+    {
+      "left": "project",
+      "right": "aim",
+      "phrase": "project_aim",
+      "count": 16,
+      "score": 37.0955
+    },
+    {
+      "left": "research",
+      "right": "group",
+      "phrase": "research_group",
+      "count": 31,
+      "score": 36.6552
+    },
+    {
+      "left": "student",
+      "right": "shall",
+      "phrase": "student_shall",
+      "count": 13,
+      "score": 36.2512
+    },
+    {
+      "left": "physics",
+      "right": "lab",
+      "phrase": "physics_lab",
+      "count": 17,
+      "score": 34.4879
+    },
+    {
+      "left": "exchange",
+      "right": "student",
+      "phrase": "exchange_student",
+      "count": 18,
+      "score": 34.3761
+    },
+    {
+      "left": "project",
+      "right": "management",
+      "phrase": "project_management",
+      "count": 19,
+      "score": 29.1782
+    },
+    {
+      "left": "emerge",
+      "right": "technology",
+      "phrase": "emerge_technology",
+      "count": 16,
+      "score": 29.1158
+    },
+    {
+      "left": "degree",
+      "right": "program",
+      "phrase": "degree_program",
+      "count": 27,
+      "score": 28.7322
+    },
+    {
+      "left": "elective",
+      "right": "course",
+      "phrase": "elective_course",
+      "count": 27,
+      "score": 27.2764
+    },
+    {
+      "left": "enable",
+      "right": "student",
+      "phrase": "enable_student",
+      "count": 17,
+      "score": 26.6553
+    },
+    {
+      "left": "interdisciplinary",
+      "right": "research",
+      "phrase": "interdisciplinary_research",
+      "count": 23,
+      "score": 23.3158
+    }
+  ],
+  "dropped_training_tokens_top_50": [
+    {
+      "token": "and",
+      "count": 4664,
+      "frequency_ratio": 0.05192,
+      "document_ratio": 0.89502
+    },
+    {
+      "token": "of",
+      "count": 3793,
+      "frequency_ratio": 0.04222,
+      "document_ratio": 0.86893
+    },
+    {
+      "token": "the",
+      "count": 3387,
+      "frequency_ratio": 0.0377,
+      "document_ratio": 0.74029
+    },
+    {
+      "token": "in",
+      "count": 2124,
+      "frequency_ratio": 0.02364,
+      "document_ratio": 0.67779
+    },
+    {
+      "token": "to",
+      "count": 2065,
+      "frequency_ratio": 0.02299,
+      "document_ratio": 0.62561
+    },
+    {
+      "token": "be",
+      "count": 1415,
+      "frequency_ratio": 0.01575,
+      "document_ratio": 0.48604
+    },
+    {
+      "token": "for",
+      "count": 1349,
+      "frequency_ratio": 0.01502,
+      "document_ratio": 0.50485
+    },
+    {
+      "token": "on",
+      "count": 664,
+      "frequency_ratio": 0.00739,
+      "document_ratio": 0.3034
+    },
+    {
+      "token": "with",
+      "count": 607,
+      "frequency_ratio": 0.00676,
+      "document_ratio": 0.29126
+    },
+    {
+      "token": "system",
+      "count": 578,
+      "frequency_ratio": 0.00643,
+      "document_ratio": 0.22512
+    },
+    {
+      "token": "as",
+      "count": 468,
+      "frequency_ratio": 0.00521,
+      "document_ratio": 0.20995
+    },
+    {
+      "token": "material",
+      "count": 449,
+      "frequency_ratio": 0.005,
+      "document_ratio": 0.15352
+    },
+    {
+      "token": "design",
+      "count": 443,
+      "frequency_ratio": 0.00493,
+      "document_ratio": 0.19235
+    },
+    {
+      "token": "engineering",
+      "count": 409,
+      "frequency_ratio": 0.00455,
+      "document_ratio": 0.15959
+    },
+    {
+      "token": "process",
+      "count": 366,
+      "frequency_ratio": 0.00407,
+      "document_ratio": 0.15534
+    },
+    {
+      "token": "by",
+      "count": 330,
+      "frequency_ratio": 0.00367,
+      "document_ratio": 0.16383
+    },
+    {
+      "token": "have",
+      "count": 319,
+      "frequency_ratio": 0.00355,
+      "document_ratio": 0.15959
+    },
+    {
+      "token": "at",
+      "count": 306,
+      "frequency_ratio": 0.00341,
+      "document_ratio": 0.1517
+    },
+    {
+      "token": "from",
+      "count": 294,
+      "frequency_ratio": 0.00327,
+      "document_ratio": 0.15352
+    },
+    {
+      "token": "will",
+      "count": 254,
+      "frequency_ratio": 0.00283,
+      "document_ratio": 0.10983
+    },
+    {
+      "token": "institute",
+      "count": 243,
+      "frequency_ratio": 0.0027,
+      "document_ratio": 0.10012
+    },
+    {
+      "token": "an",
+      "count": 238,
+      "frequency_ratio": 0.00265,
+      "document_ratio": 0.12803
+    },
+    {
+      "token": "this",
+      "count": 216,
+      "frequency_ratio": 0.0024,
+      "document_ratio": 0.11893
+    },
+    {
+      "token": "their",
+      "count": 215,
+      "frequency_ratio": 0.00239,
+      "document_ratio": 0.11165
+    },
+    {
+      "token": "jodhpur",
+      "count": 208,
+      "frequency_ratio": 0.00232,
+      "document_ratio": 0.09951
+    },
+    {
+      "token": "or",
+      "count": 201,
+      "frequency_ratio": 0.00224,
+      "document_ratio": 0.08859
+    },
+    {
+      "token": "that",
+      "count": 180,
+      "frequency_ratio": 0.002,
+      "document_ratio": 0.09466
+    },
+    {
+      "token": "can",
+      "count": 173,
+      "frequency_ratio": 0.00193,
+      "document_ratio": 0.08738
+    },
+    {
+      "token": "various",
+      "count": 170,
+      "frequency_ratio": 0.00189,
+      "document_ratio": 0.08677
+    },
+    {
+      "token": "iit",
+      "count": 166,
+      "frequency_ratio": 0.00185,
+      "document_ratio": 0.0801
+    },
+    {
+      "token": "ability",
+      "count": 163,
+      "frequency_ratio": 0.00181,
+      "document_ratio": 0.06189
+    },
+    {
+      "token": "learn",
+      "count": 162,
+      "frequency_ratio": 0.0018,
+      "document_ratio": 0.07706
+    },
+    {
+      "token": "such",
+      "count": 161,
+      "frequency_ratio": 0.00179,
+      "document_ratio": 0.08434
+    },
+    {
+      "token": "knowledge",
+      "count": 159,
+      "frequency_ratio": 0.00177,
+      "document_ratio": 0.0807
+    },
+    {
+      "token": "pc",
+      "count": 153,
+      "frequency_ratio": 0.0017,
+      "document_ratio": 0.01881
+    },
+    {
+      "token": "also",
+      "count": 149,
+      "frequency_ratio": 0.00166,
+      "document_ratio": 0.0807
+    },
+    {
+      "token": "analysis",
+      "count": 147,
+      "frequency_ratio": 0.00164,
+      "document_ratio": 0.06857
+    },
+    {
+      "token": "offer",
+      "count": 140,
+      "frequency_ratio": 0.00156,
+      "document_ratio": 0.07767
+    },
+    {
+      "token": "through",
+      "count": 135,
+      "frequency_ratio": 0.0015,
+      "document_ratio": 0.07706
+    },
+    {
+      "token": "india",
+      "count": 129,
+      "frequency_ratio": 0.00144,
+      "document_ratio": 0.06553
+    },
+    {
+      "token": "well",
+      "count": 119,
+      "frequency_ratio": 0.00132,
+      "document_ratio": 0.06735
+    },
+    {
+      "token": "introduction",
+      "count": 115,
+      "frequency_ratio": 0.00128,
+      "document_ratio": 0.04551
+    },
+    {
+      "token": "university",
+      "count": 115,
+      "frequency_ratio": 0.00128,
+      "document_ratio": 0.03823
+    },
+    {
+      "token": "indian",
+      "count": 113,
+      "frequency_ratio": 0.00126,
+      "document_ratio": 0.05522
+    },
+    {
+      "token": "towards",
+      "count": 99,
+      "frequency_ratio": 0.0011,
+      "document_ratio": 0.054
+    },
+    {
+      "token": "etc",
+      "count": 96,
+      "frequency_ratio": 0.00107,
+      "document_ratio": 0.05461
+    },
+    {
+      "token": "its",
+      "count": 93,
+      "frequency_ratio": 0.00104,
+      "document_ratio": 0.05218
+    },
+    {
+      "token": "objective",
+      "count": 93,
+      "frequency_ratio": 0.00104,
+      "document_ratio": 0.04915
+    },
+    {
+      "token": "it",
+      "count": 89,
+      "frequency_ratio": 0.00099,
+      "document_ratio": 0.04854
+    },
+    {
+      "token": "which",
+      "count": 89,
+      "frequency_ratio": 0.00099,
+      "document_ratio": 0.05036
+    }
+  ],
+  "kept_doc_types": {
+    "Student Life": 11,
+    "Research": 35,
+    "Academic Program": 64,
+    "Department": 37,
+    "Academic Regulation": 17,
+    "Course Syllabus": 13
+  },
+  "kept_departments_top_20": {
+    "Institute": 70,
+    "Office of Academic Affairs": 17,
+    "Chemistry": 16,
+    "Computer Science & Engineering": 13,
+    "Physics": 10,
+    "Metallurgical & Materials Engineering": 8,
+    "Office of Students": 7,
+    "Mechanical Engineering": 7,
+    "Mathematics": 4,
+    "Chemical Engineering": 4,
+    "Digital Humanities": 4,
+    "Electrical Engineering": 3,
+    "Bioscience & Bioengineering": 3,
+    "School of Liberal Arts": 3,
+    "Center for Technology & Sustainable Development": 3,
+    "School of AI & Data Science": 2,
+    "School of Design": 1,
+    "Center for Education Technology": 1,
+    "Central Research Facility": 1
+  },
+  "skipped_reasons": {
+    "pedagogy_heavy_page": 1,
+    "no_valid_segments": 2,
+    "excluded_by_title_or_url": 1
+  }
+}

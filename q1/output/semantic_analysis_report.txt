@@ -1,0 +1,208 @@
+
+============================================================
+ SEMANTIC ANALYSIS: CBOW (dim=100, win=5, neg=5)
+============================================================
+
+--- 1. Top 5 Nearest Neighbors ---
+
+Neighbors for 'research':
+  - multidisciplinary (cos: 0.5737)
+  - scholar (cos: 0.5667)
+  - conduct (cos: 0.5602)
+  - centre (cos: 0.5578)
+  - excellence (cos: 0.5505)
+
+Neighbors for 'student':
+  - gymkhana (cos: 0.6928)
+  - opportunity (cos: 0.5929)
+  - complete (cos: 0.5323)
+  - motivate (cos: 0.5247)
+  - curricular (cos: 0.5241)
+
+Neighbors for 'hostel':
+  - room (cos: 0.7713)
+  - court (cos: 0.7421)
+  - dining (cos: 0.7332)
+  - recreational (cos: 0.7274)
+  - facility (cos: 0.6973)
+
+Neighbors for 'phd':
+  - assistantship (cos: 0.7328)
+  - fellowship (cos: 0.7177)
+  - comprehensive_exam (cos: 0.6582)
+  - scholarship (cos: 0.6414)
+  - candidate (cos: 0.6404)
+
+Neighbors for 'exam':
+  - grade (cos: 0.6291)
+  - average (cos: 0.6097)
+  - semester (cos: 0.5610)
+  - tuition (cos: 0.5594)
+  - eligible (cos: 0.5494)
+
+--- 2. Analogy Experiments ---
+
+Analogy: 'undergraduate' is to 'btech' as 'postgraduate' is to ?
+  expected relation: program level -> example degree
+  expected answers: mtech, mba, msc, mtech_phd
+  -> mtech_phd (cos: 0.7145)
+  -> mtech (cos: 0.7132)
+  -> mba (cos: 0.6550)
+  -> albany (cos: 0.5817)
+  -> dual (cos: 0.5778)
+  note: matched expected answer 'mtech_phd'
+
+Analogy: 'btech' is to 'undergraduate' as 'mtech' is to ?
+  expected relation: degree -> program level
+  expected answers: postgraduate
+  -> postgraduate (cos: 0.6890)
+  -> msc (cos: 0.6396)
+  -> assistantship (cos: 0.5441)
+  -> program (cos: 0.5073)
+  -> workshop (cos: 0.5062)
+  note: matched expected answer 'postgraduate'
+
+Analogy: 'student' is to 'gymkhana' as 'faculty' is to ?
+  expected relation: community -> representative body / membership
+  expected answers: member, staff
+  -> member (cos: 0.8001)
+  -> administrative (cos: 0.6949)
+  -> position (cos: 0.6608)
+  -> staff (cos: 0.6209)
+  -> invite (cos: 0.5864)
+  note: matched expected answer 'member'
+
+Analogy: 'mtech' is to 'postgraduate' as 'btech' is to ?
+  expected relation: degree -> program level
+  expected answers: ug, undergraduate
+  -> ug (cos: 0.6987)
+  -> undergraduate (cos: 0.6289)
+  -> mba (cos: 0.5891)
+  -> program (cos: 0.5600)
+  -> undergraduate_program (cos: 0.5462)
+  note: matched expected answer 'ug'
+
+Analogy: 'semester' is to 'course' as 'phd' is to ?
+  expected relation: academic stage -> key academic requirement
+  expected answers: comprehensive_exam
+  -> comprehensive_exam (cos: 0.6085)
+  -> scholar (cos: 0.5459)
+  -> arise (cos: 0.5440)
+  -> researcher (cos: 0.5261)
+  -> encourage (cos: 0.5239)
+  note: matched expected answer 'comprehensive_exam'
+
+Analogy: 'faculty' is to 'department' as 'room' is to ?
+  expected relation: entity -> parent unit / container
+  expected answers: hostel
+  -> hostel (cos: 0.6215)
+  -> recreational (cos: 0.5873)
+  -> facility (cos: 0.4611)
+  -> bed (cos: 0.4432)
+  -> block (cos: 0.4235)
+  note: matched expected answer 'hostel'
+
+============================================================
+ SEMANTIC ANALYSIS: SKIPGRAM (dim=100, win=2, neg=5)
+============================================================
+
+--- 1. Top 5 Nearest Neighbors ---
+
+Neighbors for 'research':
+  - assistant (cos: 0.6132)
+  - encourage (cos: 0.5610)
+  - scholar (cos: 0.5508)
+  - excellence (cos: 0.5495)
+  - multidisciplinary (cos: 0.5400)
+
+Neighbors for 'student':
+  - gymkhana (cos: 0.6632)
+  - assistantship (cos: 0.6094)
+  - internship (cos: 0.5986)
+  - opportunity (cos: 0.5791)
+  - requisite (cos: 0.5737)
+
+Neighbors for 'hostel':
+  - dining (cos: 0.7815)
+  - room (cos: 0.7331)
+  - court (cos: 0.7089)
+  - recreational (cos: 0.6939)
+  - consist (cos: 0.6773)
+
+Neighbors for 'phd':
+  - assistantship (cos: 0.6842)
+  - comprehensive_exam (cos: 0.6318)
+  - program (cos: 0.6308)
+  - scholarship (cos: 0.6245)
+  - msc (cos: 0.6133)
+
+Neighbors for 'exam':
+  - grade (cos: 0.7040)
+  - average (cos: 0.6882)
+  - internship (cos: 0.6687)
+  - thesis (cos: 0.6454)
+  - semester (cos: 0.6396)
+
+--- 2. Analogy Experiments ---
+
+Analogy: 'undergraduate' is to 'btech' as 'postgraduate' is to ?
+  expected relation: program level -> example degree
+  expected answers: mtech, mba, msc, mtech_phd
+  -> mtech_phd (cos: 0.7087)
+  -> mtech (cos: 0.6264)
+  -> dual (cos: 0.6082)
+  -> albany (cos: 0.5930)
+  -> master (cos: 0.5483)
+  note: matched expected answer 'mtech_phd'
+
+Analogy: 'btech' is to 'undergraduate' as 'mtech' is to ?
+  expected relation: degree -> program level
+  expected answers: postgraduate
+  -> postgraduate (cos: 0.5323)
+  -> phd (cos: 0.5162)
+  -> envision (cos: 0.5117)
+  -> msc (cos: 0.4951)
+  -> program (cos: 0.4795)
+  note: matched expected answer 'postgraduate'
+
+Analogy: 'student' is to 'gymkhana' as 'faculty' is to ?
+  expected relation: community -> representative body / membership
+  expected answers: member, staff
+  -> member (cos: 0.6895)
+  -> administrative (cos: 0.6691)
+  -> expert (cos: 0.6626)
+  -> supervision (cos: 0.6455)
+  -> pursuit (cos: 0.6406)
+  note: matched expected answer 'member'
+
+Analogy: 'mtech' is to 'postgraduate' as 'btech' is to ?
+  expected relation: degree -> program level
+  expected answers: ug, undergraduate
+  -> ug (cos: 0.6349)
+  -> option (cos: 0.5958)
+  -> minor (cos: 0.5683)
+  -> undergraduate (cos: 0.5335)
+  -> senate (cos: 0.5295)
+  note: matched expected answer 'ug'
+
+Analogy: 'semester' is to 'course' as 'phd' is to ?
+  expected relation: academic stage -> key academic requirement
+  expected answers: comprehensive_exam
+  -> comprehensive_exam (cos: 0.6109)
+  -> department (cos: 0.5672)
+  -> engineere (cos: 0.5520)
+  -> welcome (cos: 0.5187)
+  -> assistantship (cos: 0.5106)
+  note: matched expected answer 'comprehensive_exam'
+
+Analogy: 'faculty' is to 'department' as 'room' is to ?
+  expected relation: entity -> parent unit / container
+  expected answers: hostel
+  -> hostel (cos: 0.4960)
+  -> equip (cos: 0.4832)
+  -> recreational (cos: 0.4706)
+  -> preparatory (cos: 0.4409)
+  -> sufficient (cos: 0.4146)
+  note: matched expected answer 'hostel'
+
+Semantic analysis report saved to output/models/semantic_analysis_report.json
