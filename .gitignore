@@ -216,7 +216,6 @@ __marimo__/
 .streamlit/secrets.toml
 
 # Assignment packaging and temporary experiment artifacts
-B23CS1037-A2/
 assignment2_submission/
 q2/results_smoke/
 q2/results_smoke2/
