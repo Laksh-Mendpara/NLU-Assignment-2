@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+"""Run simple semantic checks on the trained Q1 embeddings.
+
+The comments here explain why each scoring and filtering step exists.
+"""
+
 import argparse
 import glob
 import json
@@ -306,6 +311,7 @@ def select_default_model_paths(models_dir: str) -> list[str]:
                     continue
 
                 def ranking_key(record: dict) -> tuple:
+                    # Lower validation loss is better, so it comes first in the ranking.
                     best_validation_loss = record.get("best_validation_loss")
                     if best_validation_loss is None or best_validation_loss != best_validation_loss:
                         best_validation_loss = float("inf")
@@ -313,6 +319,8 @@ def select_default_model_paths(models_dir: str) -> list[str]:
                     if retained_ratio is None:
                         total_tokens = record.get("total_tokens") or 0
                         retained_tokens = record.get("estimated_retained_tokens_per_epoch") or 0
+                        # Formula:
+                        # retained_ratio = retained_tokens_per_epoch / total_tokens
                         retained_ratio = (retained_tokens / total_tokens) if total_tokens else 0.0
                     return (
                         best_validation_loss,
@@ -378,6 +386,7 @@ def select_default_model_paths(models_dir: str) -> list[str]:
 
 
 def build_analysis_exclusions(artifact: dict) -> set[str]:
+    # This removes obvious junk so the semantic neighbors are easier to read.
     excluded = set(ANALYSIS_EXCLUDED_TOKENS)
     tokens = artifact["vocab"]["itos"]
     counts = artifact["vocab"].get("counts", [0] * len(tokens))
@@ -408,6 +417,7 @@ def build_analysis_exclusions(artifact: dict) -> set[str]:
 
 
 def run_semantic_analysis(model_path: str, topn: int, analogy_topn: int, embedding_mode: str) -> dict:
+    # This function prints a readable report and also returns JSON-ready data.
     artifact = load_artifact(model_path)
     model_type = artifact["model_type"]
     config = artifact["config"]

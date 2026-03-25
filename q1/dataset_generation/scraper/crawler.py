@@ -1,8 +1,7 @@
-"""
-Async BFS web crawler for the iitj.ac.in domain ecosystem.
+"""Async BFS web crawler for the iitj.ac.in domain ecosystem.
 
-Manages the crawl frontier, visited set, link discovery, and
-dispatches to html_extractor / pdf_extractor as appropriate.
+This file is the main engine of the scraper.
+It keeps a queue of URLs and visits them one by one with async workers.
 """
 
 import asyncio
@@ -35,7 +34,7 @@ from scraper.content_filters import sanitize_document
 
 logger = logging.getLogger(__name__)
 
-# Compiled excluded patterns
+# Pre-compiling regex patterns makes repeated checks faster.
 _EXCLUDED_RE = [re.compile(p, re.IGNORECASE) for p in EXCLUDED_PATTERNS]
 
 
@@ -328,6 +327,8 @@ class IITJCrawler:
                         return None
                     elif resp.status == 429:
                         # Rate limited - back off more aggressively
+                        # Formula:
+                        # wait_time = RETRY_BACKOFF_BASE ** (attempt + 2)
                         wait = RETRY_BACKOFF_BASE ** (attempt + 2)
                         logger.warning("Rate limited on %s, waiting %.1fs", url, wait)
                         await asyncio.sleep(wait)
@@ -392,6 +393,8 @@ class IITJCrawler:
     def _log_progress(self):
         """Log crawl progress."""
         elapsed = time.time() - self.start_time
+        # Formula:
+        # pages_per_minute = (pages_crawled / elapsed_seconds) * 60
         rate = self.pages_crawled / elapsed if elapsed > 0 else 0
         logger.info(
             "Progress: %d pages, %d PDFs, %d failed, %d queued, %.1f pages/min",

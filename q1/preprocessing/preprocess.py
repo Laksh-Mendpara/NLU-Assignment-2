@@ -1,4 +1,8 @@
-"""Preprocess scraped IITJ documents into a clean corpus for Word2Vec training."""
+"""Preprocess scraped IITJ documents into a clean Word2Vec corpus.
+
+This file is long because it handles many cleaning rules.
+I added simple comments mainly around the important scoring formulas.
+"""
 
 from __future__ import annotations
 
@@ -1388,6 +1392,7 @@ def should_drop_paragraph(paragraph: str, doc_type: str) -> bool:
 def clean_text(text: str) -> str:
     from dataset_generation.scraper.content_filters import clean_scraped_content
 
+    # I first reuse the scraper-level cleaner, then do corpus-specific cleanup here.
     text = clean_scraped_content(text)
     text = unescape(text)
     text = text.replace("\r\n", "\n").replace("\r", "\n")
@@ -1558,6 +1563,10 @@ def learn_bigram_phrases(token_sequences: list[list[str]]) -> tuple[dict[tuple[s
         if right not in PHRASE_SEED_TOKENS and unigram_counts[right] < 20:
             continue
 
+        # Formula:
+        # phrase_score =
+        # ((pair_count - min_count + 1) * total_tokens) / (count(left) * count(right))
+        # Bigger score means the two words appear together more strongly than chance.
         score = ((pair_count - PHRASE_MIN_COUNT + 1) * total_tokens) / max(unigram_counts[left] * unigram_counts[right], 1)
         if score < PHRASE_MIN_SCORE:
             continue
@@ -1684,6 +1693,9 @@ def limit_segments_per_document(document: CorpusDocument, segments: list[list[st
     if len(segments) <= max_segments:
         return segments
 
+    # Formula:
+    # step = total_segments / max_segments
+    # This spreads the chosen segments across the document instead of keeping only the start.
     step = len(segments) / max_segments
     sampled = [segments[min(int(index * step), len(segments) - 1)] for index in range(max_segments)]
     deduplicated: list[list[str]] = []
@@ -1782,7 +1794,9 @@ def identify_training_exclusion_tokens(
         if token in PROTECTED_TRAINING_TOKENS:
             continue
 
+        # frequency_ratio = token_count / total_token_count
         frequency_ratio = count / max(total_tokens, 1)
+        # document_ratio = number_of_sequences_containing_token / total_sequences
         document_ratio = token_document_counts[token] / total_sequences
 
         should_drop = token in FORCED_DROP_TRAINING_TOKENS
@@ -1868,6 +1882,7 @@ def write_mapping_audit(
 
 
 def generate_frequency_visualization(wordcloud_img: Path, token_frequencies: Counter) -> None:
+    # I remove stop words first so the picture focuses on more useful corpus words.
     stop_words = set(STOPWORDS) | set(ENGLISH_STOP_WORDS)
     filtered_freq = {word: count for word, count in token_frequencies.items() if word not in stop_words}
     if not filtered_freq:
@@ -1894,6 +1909,7 @@ def generate_frequency_visualization(wordcloud_img: Path, token_frequencies: Cou
 
 
 def main() -> None:
+    # Main loads documents, cleans them, builds segments, and writes the final corpus files.
     args = parse_args()
     output_dir = Path(args.output_dir)
     manifest_path = Path(args.manifest_file)

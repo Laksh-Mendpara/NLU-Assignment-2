@@ -1,6 +1,4 @@
-"""
-Sitemap parser: discovers URLs from XML sitemap and A-Z HTML index.
-"""
+"""Find URLs from the XML sitemap and the A-Z page."""
 
 import logging
 from xml.etree import ElementTree
@@ -34,13 +32,13 @@ async def parse_xml_sitemap(sitemap_url: str, session: aiohttp.ClientSession) ->
 
         root = ElementTree.fromstring(text)
 
-        # Handle sitemap index (links to other sitemaps)
+        # Some sitemap files point to more sitemap files, so I follow those too.
         for sitemap_elem in root.findall("sm:sitemap/sm:loc", NS):
             if sitemap_elem.text:
                 child_urls = await parse_xml_sitemap(sitemap_elem.text.strip(), session)
                 urls.extend(child_urls)
 
-        # Handle regular URL entries
+        # Normal sitemap entries directly contain page URLs.
         for url_elem in root.findall("sm:url/sm:loc", NS):
             if url_elem.text:
                 url = url_elem.text.strip()
@@ -72,6 +70,7 @@ async def parse_atoz_index(index_url: str, session: aiohttp.ClientSession) -> li
                 return urls
             html = await resp.text()
 
+        # Here I simply collect all internal links from the A-Z page.
         soup = BeautifulSoup(html, "lxml")
         for a_tag in soup.find_all("a", href=True):
             href = a_tag["href"]

@@ -1,6 +1,4 @@
-"""
-Content deduplication: prevents storing duplicate content from different URLs.
-"""
+"""Skip duplicate content so the dataset stays cleaner."""
 
 import hashlib
 import logging
@@ -14,6 +12,7 @@ class ContentDeduplicator:
     """
 
     def __init__(self):
+        # One set tracks content hashes and one set tracks seen URLs.
         self._seen_hashes: set[str] = set()
         self._seen_urls: set[str] = set()
         self.duplicate_count: int = 0
@@ -32,6 +31,7 @@ class ContentDeduplicator:
         if not content or len(content.strip()) < 20:
             return True  # Treat empty/tiny content as duplicate
 
+        # MD5 is enough here because we only need a quick duplicate check.
         content_hash = hashlib.md5(content.encode()).hexdigest()
 
         if content_hash in self._seen_hashes:
@@ -65,7 +65,7 @@ class ContentDeduplicator:
         # Remove common tracking params
         if "?" in url:
             base, params = url.split("?", 1)
-            # Keep meaningful params, drop tracking
+            # I keep useful query params and drop common tracking params.
             clean_params = []
             for p in params.split("&"):
                 key = p.split("=")[0]

@@ -1,5 +1,6 @@
-"""
-Configuration settings for IITJ web scraper.
+"""Configuration settings for the IITJ scraper.
+
+I kept most comments short and simple here because this file is mostly lists.
 """
 
 # ── Seed URLs ───────────────────────────────────────────────────────────────
@@ -115,9 +116,9 @@ SEED_URLS = [
 SITEMAP_URL = "https://iitj.ac.in/sitemap.xml"
 
 # ── Known Subdomains ────────────────────────────────────────────────────────
-# explicitly seed department/school subdomains so we don't miss them
+# I list these subdomains by hand so the crawler does not miss important areas.
 KNOWN_SUBDOMAINS = [
-    # Explicitly including department and school subdomains
+    # These are the main department, school, and institute subdomains we care about.
     "https://cse.iitj.ac.in",
     "https://ee.iitj.ac.in",
     "https://me.iitj.ac.in",
@@ -143,11 +144,11 @@ KNOWN_SUBDOMAINS = [
 ALLOWED_DOMAIN = "iitj.ac.in"
 
 # ── Rate Limiting ───────────────────────────────────────────────────────────
-DEFAULT_DELAY = 1.0            # seconds between requests per worker
-MAX_CONCURRENCY = 5            # max simultaneous connections
-REQUEST_TIMEOUT = 30           # seconds
+DEFAULT_DELAY = 1.0            # wait time between requests for one worker
+MAX_CONCURRENCY = 5            # how many requests we allow at the same time
+REQUEST_TIMEOUT = 30           # stop waiting after this many seconds
 MAX_RETRIES = 3
-RETRY_BACKOFF_BASE = 2.0       # exponential backoff base
+RETRY_BACKOFF_BASE = 2.0       # wait grows like 2^attempt when retrying
 
 # ── Output ──────────────────────────────────────────────────────────────────
 DEFAULT_OUTPUT_DIR = "./output"
@@ -166,7 +167,7 @@ MAX_PDF_SIZE_MB = 100          # skip PDFs larger than this
 PDF_DOWNLOAD_DIR = "/tmp/iitj_pdfs"
 
 # ── Excluded URL Patterns ──────────────────────────────────────────────────
-# Regex patterns — any URL matching these is skipped
+# Any URL matching one of these regex patterns will be skipped.
 EXCLUDED_PATTERNS = [
     r"erponline\.iitj\.ac\.in",          # ERP portal (auth-protected)
     r"/login",
@@ -202,7 +203,7 @@ EXCLUDED_PATTERNS = [
     r"javascript:",
     r"#$",                                 # anchor-only links
     r"/hi/",                               # Hindi pages explicitly excluded
-    # Exclude non-academic domains to narrow down to strictly requested data
+    # These non-academic areas are skipped so the corpus stays focused.
     r"library\.iitj\.ac\.in",
     r"spc\.iitj\.ac\.in",
     r"alumni\.iitj\.ac\.in",
@@ -228,7 +229,7 @@ EXCLUDED_PATTERNS = [
 ]
 
 # ── Document Type Classification ────────────────────────────────────────────
-# Maps URL path patterns to document types
+# These regex rules try to guess the document type from the URL.
 DOC_TYPE_RULES = [
     (r"/office-of-students/|campus-life|student-life|student-life-at-iit-jodhpur|life-%40-iit-jodhpur|hostels?-facilities|visitors?-hostel|/facilities(?:[/?]|$)|gymkhana|dining-facilities|career-services|wellbeing", "Student Life"),
     (r"research\.iitj\.ac\.in/unit/(?:department|profile|publication)/", "Research"),

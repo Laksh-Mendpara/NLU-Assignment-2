@@ -1,6 +1,6 @@
-"""
-PDF extractor: downloads PDFs and extracts text with pdfplumber first.
-Falls back to PyMuPDF when a PDF has a layout pdfplumber cannot decode well.
+"""Download PDFs and extract text from them.
+
+I try `pdfplumber` first and fall back to PyMuPDF if the PDF is messy.
 """
 
 import logging
@@ -42,7 +42,7 @@ async def download_and_extract(url: str, session: aiohttp.ClientSession) -> dict
                 logger.warning("PDF download failed (status %d): %s", resp.status, url)
                 return None
 
-            # Check content length
+            # First I check the announced file size, if the server gives one.
             content_length = resp.headers.get("Content-Length")
             if content_length:
                 size_mb = int(content_length) / (1024 * 1024)
@@ -59,7 +59,7 @@ async def download_and_extract(url: str, session: aiohttp.ClientSession) -> dict
                 total_bytes = 0
                 async for chunk in resp.content.iter_chunked(8192):
                     total_bytes += len(chunk)
-                    # Double-check size during download
+                    # I check size again while streaming, because header sizes are not always reliable.
                     if total_bytes > MAX_PDF_SIZE_MB * 1024 * 1024:
                         logger.warning("PDF exceeded size limit during download: %s", url)
                         os.unlink(tmp_path)
@@ -115,6 +115,7 @@ def _get_filename(url: str) -> str:
 
 
 def _extract_pdf_text(pdf_path: str, url: str) -> tuple[str, int]:
+    # The first extractor is usually enough for text PDFs.
     if pdfplumber is not None:
         try:
             with pdfplumber.open(pdf_path) as pdf:
@@ -134,6 +135,7 @@ def _extract_pdf_text(pdf_path: str, url: str) -> tuple[str, int]:
         except Exception as exc:
             logger.warning("pdfplumber extraction failed for %s: %s", url, exc)
 
+    # If that fails, I try a second library as a backup plan.
     try:
         import pymupdf
 

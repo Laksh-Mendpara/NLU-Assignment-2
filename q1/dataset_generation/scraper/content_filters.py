@@ -1,14 +1,20 @@
 from __future__ import annotations
 
+"""Clean noisy scraped text before it goes into the training pipeline.
+
+This file has many filter lists and regex rules, so I keep the comments short.
+"""
+
 import re
 
-# These regexes help us trim noisy website content before training.
+# These regexes help remove website noise before model training.
 TOKEN_RE = re.compile(r"[a-z]+(?:[a-z'-]*[a-z]+)?", flags=re.IGNORECASE)
 MARKDOWN_HEADING_RE = re.compile(r"^\s*(#{1,6})\s*(.*?)\s*$")
 URL_RE = re.compile(r"https?://\S+|www\.\S+", flags=re.IGNORECASE)
 EMAIL_RE = re.compile(r"\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}\b")
 BULLET_PREFIX_RE = re.compile(r"^\s*(?:[-*•●▪◆■◦]|o)\s+")
 
+# These document types are not useful for the final Word2Vec corpus.
 EXCLUDED_DOC_TYPES = {
     "Announcement",
     "Facility",

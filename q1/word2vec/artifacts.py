@@ -29,6 +29,7 @@ def _ranked_results(
     topn: int,
     excluded_indices: set[int] | None = None,
 ) -> list[tuple[str, float]]:
+    # This sorts scores from high to low and keeps the best few words.
     results: list[tuple[str, float]] = []
     for idx in torch.argsort(similarities, descending=True).tolist():
         if excluded_indices and idx in excluded_indices:
@@ -55,6 +56,8 @@ def embedding_matrix(artifact: dict, mode: str = "combined") -> torch.Tensor:
     if mode == "output":
         return output_weights
     if mode == "combined":
+        # Formula:
+        # combined_embedding = (input_embedding + output_embedding) / 2
         return (input_weights + output_weights) / 2.0
     raise ValueError(f"Unsupported embedding mode: {mode}")
 
@@ -74,6 +77,8 @@ def nearest_neighbors(
     vectors = embedding_matrix(artifact, mode=mode)
     normalized = F.normalize(vectors, p=2, dim=1)
     query_index = stoi[word]
+    # Formula:
+    # cosine_similarity(a, b) = normalized_a dot normalized_b
     similarities = normalized @ normalized[query_index]
     tokens = artifact["vocab"]["itos"]
     excluded_indices = {query_index}
@@ -98,6 +103,8 @@ def solve_analogy(
 
     vectors = embedding_matrix(artifact, mode=mode)
     normalized = F.normalize(vectors, p=2, dim=1)
+    # Formula:
+    # analogy_vector = vec(b) - vec(a) + vec(c)
     query = normalized[stoi[b]] - normalized[stoi[a]] + normalized[stoi[c]]
     query = F.normalize(query.unsqueeze(0), p=2, dim=1).squeeze(0)
 

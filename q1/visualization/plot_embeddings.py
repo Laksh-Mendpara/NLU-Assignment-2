@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+"""Make 2D plots for the learned Word2Vec embeddings.
+
+I added short comments here because PCA and t-SNE can feel confusing at first.
+"""
+
 import argparse
 import glob
 import os
@@ -21,6 +26,7 @@ from inference.semantic_analysis import build_analysis_exclusions
 
 
 def parse_args() -> argparse.Namespace:
+    # These defaults are enough for the normal Q1 workflow.
     return argparse.Namespace(
         models_dir="output/models",
         model_paths=None,
@@ -75,6 +81,7 @@ def select_default_model_paths(models_dir: str) -> list[str]:
 
 
 def build_word_list(artifact: dict, max_words: int) -> list[str]:
+    # We mix a few hand-picked anchor words with common words from the corpus.
     focus_words = [
         "research",
         "student",
@@ -122,6 +129,7 @@ def project_vectors(vectors: np.ndarray, method: str) -> np.ndarray:
         raise ValueError("Need at least two vectors for 2D projection.")
 
     if method == "pca":
+        # PCA makes a 2D view by keeping directions with large variance.
         reducer = PCA(n_components=2, random_state=42)
         return reducer.fit_transform(vectors)
 
@@ -141,6 +149,7 @@ def project_vectors(vectors: np.ndarray, method: str) -> np.ndarray:
 
 
 def plot_embeddings(model_path: str, output_dir: str, method: str, max_words: int) -> None:
+    # This loads one model, picks words, projects them to 2D, and saves the plot.
     artifact = load_artifact(model_path)
     model_type = artifact["model_type"]
     config = artifact["config"]

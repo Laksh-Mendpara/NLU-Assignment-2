@@ -1,10 +1,12 @@
 #!/bin/bash
+# This shell script runs the full Q1 pipeline from start to finish.
 set -euo pipefail
 
 Q1_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PARENT_DIR="$(cd "$Q1_DIR/.." && pwd)"
 
 if [[ -x "$PARENT_DIR/.venv/bin/python" ]]; then
+  # I prefer the local virtual environment if it exists.
   PYTHON_BIN="$PARENT_DIR/.venv/bin/python"
 else
   PYTHON_BIN="python3"
@@ -12,6 +14,7 @@ fi
 
 cd "$Q1_DIR"
 
+# Make output folders before running the steps.
 mkdir -p output/data output/pdfs output/models output/plots
 
 echo "=============================================="

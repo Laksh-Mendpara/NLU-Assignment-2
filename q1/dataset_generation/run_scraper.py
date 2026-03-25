@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-"""Simple scraper script used in Q1."""
+"""Simple scraper script used in Q1.
+
+This file ties the scraper pieces together in one easy flow.
+"""
 
 import argparse
 import asyncio
@@ -26,7 +29,7 @@ from config.settings import (
 
 
 def setup_logging(verbose: bool = False):
-    """Configure logging with colored output."""
+    """Configure logging so crawl messages are easy to read."""
     level = logging.DEBUG if verbose else logging.INFO
     fmt = "%(asctime)s │ %(levelname)-7s │ %(message)s"
     datefmt = "%H:%M:%S"
@@ -62,6 +65,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def load_extra_seed_urls(args: argparse.Namespace) -> list[str]:
+    # This lets us add a few more starting URLs without editing the code.
     extra_seed_urls = list(args.seed_url or [])
     if args.seed_file:
         seed_file = Path(args.seed_file)
@@ -85,6 +89,7 @@ def rebuild_output_artifacts(output_dir: str, crawl_stats: dict | None = None) -
     total_written = 0
     skipped_documents = 0
 
+    # We read both saved HTML pages and saved PDFs and rebuild clean outputs from them.
     for directory_name, storage_kind in (("data", "html"), ("pdfs", "pdf")):
         directory = output_path / directory_name
         if not directory.is_dir():
@@ -191,6 +196,7 @@ async def discover_urls(
 
 
 async def main():
+    # The crawl runs in four simple phases: discover, initialize, crawl, rebuild outputs.
     args = parse_args()
     setup_logging(args.verbose)
     extra_seed_urls = load_extra_seed_urls(args)

@@ -1,6 +1,6 @@
-"""
-HTML content extractor: converts raw HTML to clean Markdown text.
-Uses trafilatura as primary extractor with BeautifulSoup fallback.
+"""HTML content extractor: turn raw HTML into cleaner text.
+
+I try one stronger extractor first, then fall back to BeautifulSoup if needed.
 """
 
 import logging
@@ -70,6 +70,7 @@ def extract_content(html: str, url: str) -> dict:
     Returns:
         dict with keys: 'content' (str), 'title' (str), 'description' (str)
     """
+    # I always return the same keys so the crawler can use the result safely.
     result = {"content": "", "title": "", "description": ""}
 
     if not html:
@@ -156,7 +157,7 @@ def _bs4_extract(html: str) -> str:
         except Exception:
             pass
 
-    # Try to find main content container
+    # I check common "main content" containers before falling back to the whole body.
     main = (
         soup.find("main")
         or soup.find("article")
@@ -216,4 +217,7 @@ def _candidate_score(text: str) -> float:
     noise_hits = sum(len(re.findall(pattern, lowered)) for pattern in CANDIDATE_NOISE_PATTERNS)
     short_lines = sum(1 for line in text.splitlines() if 0 < len(re.findall(r"[a-z]+", line.lower())) <= 2)
     unique_ratio = len(set(tokens)) / len(tokens)
+    # Formula:
+    # score = token_count + (unique_ratio * 100) - (noise_hits * 35) - (short_lines * 1.5)
+    # Bigger score means "this looks more like useful main content".
     return len(tokens) + (unique_ratio * 100.0) - (noise_hits * 35.0) - (short_lines * 1.5)

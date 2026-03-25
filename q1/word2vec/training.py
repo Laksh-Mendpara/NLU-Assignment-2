@@ -1,4 +1,8 @@
-"""Core Word2Vec training utilities used by Q1."""
+"""Core Word2Vec training utilities used by Q1.
+
+I added short comments in simple English here because this file contains
+most of the math used by the Word2Vec models.
+"""
 
 from __future__ import annotations
 
@@ -14,6 +18,7 @@ import torch.nn.functional as F
 
 @dataclass
 class Vocabulary:
+    # `stoi` means string-to-index and `itos` means index-to-string.
     stoi: dict[str, int]
     itos: list[str]
     counts: list[int]
@@ -68,6 +73,8 @@ def count_training_examples(encoded_sentences: list[list[int]], window_size: int
             context_len = (position - left) + (right - position - 1)
             if context_len <= 0:
                 continue
+            # CBOW uses one context window to predict one target word.
+            # Skip-gram uses one center word to predict each context word.
             total += context_len if model_type == "skipgram" else 1
     return total
 
@@ -85,6 +92,10 @@ def build_subsampling_keep_probabilities(
     for count in counts:
         # Frequent words get smaller keep probabilities.
         frequency = count / total_tokens
+        # Formula used here:
+        # keep_prob = min(1, sqrt(t / f) + (t / f))
+        # `t` is the subsampling threshold and `f` is the token frequency.
+        # So very common words are kept less often.
         keep_probability = min(1.0, math.sqrt(threshold / frequency) + (threshold / frequency))
         keep_probabilities.append(keep_probability)
     return keep_probabilities
@@ -117,6 +128,9 @@ class NegativeSampler:
 
     def __init__(self, counts: list[int], exponent: float = 0.75, device: str | torch.device = "cpu") -> None:
         noise = torch.tensor(counts, dtype=torch.float32, device=device)
+        # Formula:
+        # p(w) = count(w)^0.75 / sum(counts^0.75)
+        # This is the standard negative-sampling distribution from Word2Vec.
         noise = noise.pow(exponent)
         self.probabilities = noise / noise.sum()
         self.device = device
@@ -175,14 +189,20 @@ class CBOWNegativeSamplingModel(nn.Module):
     ) -> torch.Tensor:
         context_vectors = self.input_embeddings(contexts)
         masked_vectors = context_vectors * context_mask.unsqueeze(-1)
+        # Formula:
+        # pooled_context = sum(context_vectors) / number_of_real_context_words
         pooled = masked_vectors.sum(dim=1) / context_mask.sum(dim=1, keepdim=True).clamp_min(1.0)
 
         positive_vectors = self.output_embeddings(targets)
         negative_vectors = self.output_embeddings(negatives)
 
+        # These are dot products between embeddings.
+        # Bigger dot product means the model thinks the words fit together better.
         positive_scores = (pooled * positive_vectors).sum(dim=1)
         negative_scores = torch.einsum("bd,bkd->bk", pooled, negative_vectors)
 
+        # Negative-sampling loss:
+        # loss = - [log(sigmoid(pos_score)) + sum(log(sigmoid(-neg_score)))]
         positive_loss = F.logsigmoid(positive_scores)
         negative_loss = F.logsigmoid(-negative_scores).sum(dim=1)
         return -(positive_loss + negative_loss).mean()
@@ -212,6 +232,7 @@ class SkipGramNegativeSamplingModel(nn.Module):
         positive_vectors = self.output_embeddings(positives)
         negative_vectors = self.output_embeddings(negatives)
 
+        # Skip-gram uses the same loss idea as CBOW, but with one center word at a time.
         positive_scores = (center_vectors * positive_vectors).sum(dim=1)
         negative_scores = torch.einsum("bd,bkd->bk", center_vectors, negative_vectors)
 
@@ -226,6 +247,7 @@ def _collate_cbow(
     pad_idx: int,
     device: str | torch.device,
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    # CBOW contexts can have different lengths, so we pad them and keep a mask.
     max_context_length = max(len(context) for context in contexts_batch)
     contexts = torch.full(
         (len(contexts_batch), max_context_length),
@@ -289,6 +311,7 @@ def _collate_skipgram(
     positives_batch: list[int],
     device: str | torch.device,
 ) -> tuple[torch.Tensor, torch.Tensor]:
+    # Skip-gram pairs are already fixed-size, so batching is simple here.
     centers = torch.tensor(centers_batch, dtype=torch.long, device=device)
     positives = torch.tensor(positives_batch, dtype=torch.long, device=device)
     return centers, positives
@@ -391,6 +414,8 @@ def evaluate_word2vec_model(
                 batch_count += 1
 
     model.train()
+    # Formula:
+    # mean_validation_loss = sum(batch_losses) / number_of_batches
     return running_loss / max(batch_count, 1)
 
 
@@ -473,6 +498,8 @@ def train_word2vec_model(
         )
         estimated_retained = expected_retained_tokens(encoded_sentences, candidate_keep_probabilities)
         avg_retained_per_sentence = estimated_retained / max(len(encoded_sentences), 1)
+        # Formula:
+        # retained_token_ratio = estimated_tokens_after_subsampling / total_tokens
         retained_token_ratio = estimated_retained / max(total_tokens, 1)
 
         # On a small academic corpus, aggressive subsampling can remove too much signal.
@@ -560,6 +587,8 @@ def train_word2vec_model(
                 batch_count += 1
                 examples_seen += int(centers.size(0))
 
+        # Formula:
+        # average_loss = sum(batch_losses) / number_of_batches
         average_loss = running_loss / max(batch_count, 1)
         loss_history.append(average_loss)
         examples_per_epoch = examples_seen
@@ -586,6 +615,7 @@ def train_word2vec_model(
             lr_reduced = current_lr + 1e-12 < previous_lr
 
             # Keep the best model weights according to validation loss.
+            # We only call it a true improvement if it beats the old best by `min_delta`.
             if validation_loss + early_stopping_min_delta < best_validation_loss:
                 best_validation_loss = validation_loss
                 best_epoch = epoch + 1

@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+"""Run the Q1 Word2Vec experiment grid and save all outputs.
+
+I kept the comments simple so the training flow is easy to follow.
+"""
+
 import argparse
 import csv
 import json
@@ -51,6 +56,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def set_seed(seed: int) -> None:
+    # A fixed seed makes the train/validation split and training runs repeatable.
     random.seed(seed)
     torch.manual_seed(seed)
     if torch.cuda.is_available():
@@ -119,6 +125,8 @@ def main():
     validation_count = 0
     # Keep one fixed validation split so all experiment settings are compared fairly.
     if args.validation_ratio > 0:
+        # Formula:
+        # validation_count = round(total_sentences * validation_ratio)
         validation_count = max(1, int(round(len(sentence_indices) * args.validation_ratio)))
         validation_count = min(validation_count, max(len(sentence_indices) - 1, 0))
     validation_indices = set(sentence_indices[:validation_count])
@@ -199,6 +207,8 @@ def main():
                             f"  -> best validation loss: {best_validation_loss:.4f} "
                             f"(epoch {best_epoch}/{epochs_completed})"
                         )
+                    # `retained_ratio` means:
+                    # retained_tokens_after_subsampling / total_tokens_in_corpus
                     print(f"  -> retained tokens/epoch: {retained_tokens:.0f} ({retained_ratio:.1%} of corpus)")
                     print(f"  -> examples/epoch: {examples_per_epoch:,}")
                     print(f"  -> early stopping: {'triggered' if stopped_early else 'not triggered'}")

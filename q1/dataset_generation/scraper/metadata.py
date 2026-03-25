@@ -1,5 +1,6 @@
-"""
-Metadata builder: classifies documents and attaches provenance metadata.
+"""Build metadata for scraped pages and PDFs.
+
+This keeps source information together with the extracted text.
 """
 
 import hashlib
@@ -36,6 +37,7 @@ def build_metadata(
 
     department = extract_department(url)
 
+    # `id` is a short stable id made from the URL hash.
     meta = {
         "id": hashlib.sha256(url.encode()).hexdigest()[:16],
         "source_url": url,
@@ -55,7 +57,7 @@ def build_metadata(
 
 
 def classify_doc_type(url: str) -> str:
-    """Auto-classify document type from URL patterns."""
+    """Guess the document type from the URL using regex rules."""
     url_lower = url.lower()
     for pattern, dtype in DOC_TYPE_RULES:
         if re.search(pattern, url_lower):
@@ -64,7 +66,7 @@ def classify_doc_type(url: str) -> str:
 
 
 def extract_department(url: str) -> str:
-    """Extract department/school/center name from URL path."""
+    """Guess the department or school name from the URL path."""
     # Common department path patterns
     dept_patterns = [
         (r"research\.iitj\.ac\.in/unit/department/department-of-computer-science(?:-engineering)?", "Computer Science & Engineering"),
