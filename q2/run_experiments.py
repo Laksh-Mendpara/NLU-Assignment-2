@@ -1,4 +1,8 @@
-"""Train and compare simple character-level name generators for Q2."""
+"""Train and compare simple character-level name generators for Q2.
+
+The comments in this file are written in simple language on purpose.
+I wanted each step to read like beginner notes from class or lab work.
+"""
 
 from __future__ import annotations
 
@@ -31,6 +35,7 @@ DISPLAY_NAMES = {
 
 
 def set_seed(seed: int) -> None:
+    # Using the same seed helps us get repeatable results.
     random.seed(seed)
     torch.manual_seed(seed)
     if torch.cuda.is_available():
@@ -38,10 +43,12 @@ def set_seed(seed: int) -> None:
 
 
 def count_trainable_parameters(model: nn.Module) -> int:
+    # We add up every parameter that will actually be updated by training.
     return sum(parameter.numel() for parameter in model.parameters() if parameter.requires_grad)
 
 
 def load_names(dataset_path: Path) -> tuple[list[str], int]:
+    # This reads one name per line and cleans small spacing problems.
     names: list[str] = []
     normalized_lines = 0
 
@@ -74,6 +81,7 @@ class CharacterVocabulary:
         self.eos_idx = self.stoi[EOS_TOKEN]
 
     def encode_name(self, name: str) -> list[int]:
+        # We store each name as: <bos> + letters + <eos>.
         return [self.bos_idx, *[self.stoi[character] for character in name], self.eos_idx]
 
     def decode_tokens(self, token_ids: Iterable[int]) -> str:
@@ -110,6 +118,7 @@ class PrefixDataset(Dataset[tuple[Tensor, int]]):
 
 def build_collate_fn(pad_idx: int):
     def collate_fn(batch: Sequence[tuple[Tensor, int]]) -> tuple[Tensor, Tensor, Tensor]:
+        # Padding makes all prefixes in one batch the same length.
         prefixes, targets = zip(*batch)
         lengths = torch.tensor([prefix.size(0) for prefix in prefixes], dtype=torch.long)
         padded_prefixes = pad_sequence(prefixes, batch_first=True, padding_value=pad_idx)
@@ -121,6 +130,7 @@ def build_collate_fn(pad_idx: int):
 
 @dataclass(frozen=True)
 class ExperimentConfig:
+    # These are the main training settings used for every model.
     embedding_dim: int = 32
     hidden_size: int = 64
     num_layers: int = 1
@@ -160,6 +170,10 @@ class NextCharacterModel(nn.Module):
                     logits = self(prefix, lengths)
                     logits[:, vocabulary.pad_idx] = float("-inf")
                     logits[:, vocabulary.bos_idx] = float("-inf")
+                    # Formula:
+                    # probability(next_char) = softmax(logits / temperature)
+                    # Smaller temperature makes choices sharper.
+                    # Bigger temperature makes sampling more random.
                     probabilities = torch.softmax(logits / temperature, dim=-1)
                     next_token = torch.multinomial(probabilities, num_samples=1).item()
 
@@ -252,18 +266,25 @@ class AttentionRNNModel(NextCharacterModel):
         # Attention lets the model look back at all prefix states, not just the last one.
         projected_query = self.query_projection(query).unsqueeze(1)
         projected_keys = self.key_projection(outputs)
+        # Formula idea:
+        # score_t = v^T tanh(W_key * h_t + W_query * query)
+        # Here each position gets one score, then softmax turns scores into weights.
         scores = self.attention_vector(torch.tanh(projected_keys + projected_query)).squeeze(-1)
 
         max_length = outputs.size(1)
         mask = torch.arange(max_length, device=lengths.device).unsqueeze(0) < lengths.unsqueeze(1)
         scores = scores.masked_fill(~mask, float("-inf"))
         attention_weights = torch.softmax(scores, dim=1)
+        # Formula:
+        # context = sum(attention_weight_t * hidden_state_t)
+        # So the model builds one summary from all earlier hidden states.
         context = torch.bmm(attention_weights.unsqueeze(1), outputs).squeeze(1)
         combined = torch.cat([query, context], dim=1)
         return self.output(combined)
 
 
 def build_model(model_name: str, vocab_size: int, config: ExperimentConfig) -> NextCharacterModel:
+    # This small lookup lets us choose a model by name.
     constructors = {
         "vanilla_rnn": VanillaRNNModel,
         "blstm": BLSTMModel,
@@ -279,6 +300,7 @@ def build_model(model_name: str, vocab_size: int, config: ExperimentConfig) -> N
 
 
 def architecture_description(model_name: str, config: ExperimentConfig) -> str:
+    # These text descriptions are used in the final report.
     descriptions = {
         "vanilla_rnn": (
             f"Character embeddings ({config.embedding_dim}) -> "
@@ -306,6 +328,7 @@ def train_model(
     config: ExperimentConfig,
     device: torch.device,
 ) -> list[float]:
+    # Cross-entropy is the standard next-token loss.
     optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate)
     criterion = nn.CrossEntropyLoss()
     history: list[float] = []
@@ -336,6 +359,8 @@ def train_model(
             epoch_loss += loss.item() * batch_size
             seen_examples += batch_size
 
+        # Formula:
+        # average_loss = total_loss_over_batches / number_of_examples_seen
         average_loss = epoch_loss / seen_examples
         history.append(average_loss)
 
@@ -358,13 +383,18 @@ def evaluate_samples(samples: Sequence[str], training_names: set[str]) -> dict[s
         "generated": len(samples),
         "unique": unique_names,
         "novel": novel_names,
+        # Formula:
+        # novelty_rate = novel_names / total_generated_names
         "novelty_rate": novel_names / len(samples),
+        # Formula:
+        # diversity = unique_generated_names / total_generated_names
         "diversity": unique_names / len(samples),
         "average_length": average_length,
     }
 
 
 def detect_failure_modes(samples: Sequence[str], training_names: set[str]) -> list[str]:
+    # These counts are simple checks to explain where a model goes wrong.
     failures: list[str] = []
     duplicate_count = len(samples) - len(set(samples))
     copied_count = sum(name in training_names for name in samples)
@@ -387,6 +417,7 @@ def detect_failure_modes(samples: Sequence[str], training_names: set[str]) -> li
 
 
 def select_representative_samples(samples: Sequence[str], limit: int = 12) -> list[str]:
+    # I keep the first unique samples so the report does not show many duplicates.
     seen: set[str] = set()
     selected: list[str] = []
     for sample in samples:
@@ -407,6 +438,7 @@ def write_report(
     config: ExperimentConfig,
     results: dict[str, dict[str, object]],
 ) -> None:
+    # This builds one markdown report from all experiment results.
     metrics_rows = []
     for model_name, model_result in results.items():
         metrics = model_result["metrics"]
@@ -531,6 +563,7 @@ def write_report(
 
 
 def run_experiments(dataset_path: Path, output_dir: Path, config: ExperimentConfig) -> None:
+    # We use the same seed and same settings for every model to keep comparison fair.
     set_seed(config.seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     names, normalized_lines = load_names(dataset_path)
@@ -617,6 +650,7 @@ def run_experiments(dataset_path: Path, output_dir: Path, config: ExperimentConf
 
 
 def parse_args() -> argparse.Namespace:
+    # These CLI flags let us change the experiment without editing the file.
     parser = argparse.ArgumentParser(description="Train and compare name generation models for Q2.")
     parser.add_argument(
         "--dataset",
@@ -645,6 +679,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    # Main just reads the CLI settings, makes the config, and starts training.
     args = parse_args()
     config = ExperimentConfig(
         embedding_dim=args.embedding_dim,
