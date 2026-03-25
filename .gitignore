@@ -1,3 +1,5 @@
+# This file tells Git which generated or local files to ignore.
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
